@@ -68,7 +68,7 @@ async function getMoves(m, genData){
             await pool.query(q);
 
             // save next_offset to db  
-            await pool.query('UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation=$1',[m.gen]);
+            await pool.query('UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation=$1',[Number(m.gen)]);
 
 
         });
@@ -119,7 +119,7 @@ async function getSpecies(m, genData){
             await pool.query(q);
 
             // save next_offset to db  
-            await pool.query('UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation=$1',[m.gen]);
+            await pool.query('UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation=$1',[Number(m.gen)]);
 
 
   
@@ -199,7 +199,7 @@ async function getDataFromDB(gen){
 }
 
 async function getOffsetValues(){
-	return pool.query("SELECT * FROM offset_values");
+	return pool.query("SELECT * FROM offset_values ORDER BY generation");
 }
 
 module.exports = {pool, client, getMoves, getSpecies, getGenerationsData, getDataFromDB, getOffsetValues}	
