@@ -1,0 +1,64 @@
+name: Running backend tests
+on: [push]
+
+
+jobs:
+  # Label of the runner job
+  runner-job: 
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 1234
+          POSTGRES_DB: pokemon
+        options: >-
+          --name pg
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      rabbitmq:
+        image: rabbitmq:latest
+        ports:
+          - 5672:5672  
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: User Node JS 20+
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'    
+
+      - name: Install dependencies
+        run: npm ci
+
+
+      - name: Connect to PostgreSQL
+        run: node setup.js
+        env:
+          DB_PASSWORD : 1234
+          DB_PORT : 5432
+          DB_USER : postgres
+          DB_DATABASE : pokemon
+          DB_HOST : localhost
+        # run: |
+        #   docker cp ./schemas/. pg:/docker-entrypoint-initdb.d/
+        # working-directory: ./backend 
+
+      - name: Run tests
+        run: npm run test
+        env:
+          DATA_ANALYZER_PORT : 3000
+          DATA_COLLECTOR_PORT : 3001
+          DB_PASSWORD : 1234
+          DB_PORT : 5432
+          DB_USER : postgres
+          DB_DATABASE : pokemon
+          DB_HOST : localhost
+          MQ_URL : amqp://localhost:5672  
