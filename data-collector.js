@@ -7,19 +7,16 @@ require('dotenv').config();
 const port = process.env.DATA_COLLECTOR_PORT;
 const pokeUrl = "https://pokeapi.co/api/v2/";
 
-let genData = [];
-
 async function main(){
     
     app.listen(port, async ()=>{
-        getGenerationsData().then(async (g)=>{
+        getGenerationsData().then(async (genData)=>{
            
-            genData = g.slice();
             //console.log(genData);
 
             try{
                 const channel = await connectToMQ();
-                await getMessageFromDataAnalyzer(channel);
+                await getMessageFromDataAnalyzer(channel, genData);
             }catch(ex){
                 console.log(ex);
             }
@@ -33,7 +30,7 @@ main().catch(ex=>console.error(ex));
 
 
 
-async function getMessageFromDataAnalyzer(channel){
+async function getMessageFromDataAnalyzer(channel, genData){
   
     try{
         await channel.consume("atc", async (msg)=>{
