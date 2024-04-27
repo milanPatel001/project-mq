@@ -4,7 +4,7 @@ const {analyzeData} = require("./utils.js");
 const cors = require("cors");
 require('dotenv').config();
 
-const port = process.env.DATA_ANALYZER_PORT;
+const port = process.env.PORT || process.env.DATA_ANALYZER_PORT;
 let offsets = [];
 
 async function main(){
