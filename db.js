@@ -134,51 +134,54 @@ async function getSpecies(m, genData){
 
 async function getGenerationsData(){
 	//getting all the generations
-	const res = await pool.query("SELECT id FROM generation ORDER BY id");
+	pool.query("SELECT * FROM generation ORDER BY id").then(async (res) => {
+        const genData = [];
 
-	const genData = [];
+        if(res.rows.length != 9){
+            console.log("Fetching all the generations data...");
 
-	if(res.rows.length != 9){
-		console.log("Fetching all the generations data...");
+            const axiosRequests = [];
 
-        const axiosRequests = [];
+        for(let id=1;id<=9;id++){
 
-	   for(let id=1;id<=9;id++){
+                const opt = {
+                    method: "GET",
+                    url: pokeGenUrl+id
+                }; 
 
-			const opt = {
-				method: "GET",
-				url: pokeGenUrl+id
-			}; 
+                axiosRequests.push(axios.request(opt));
+            }
 
-            axiosRequests.push(axios.request(opt));
-	    }
+            const responses = await Promise.all(axiosRequests);
 
-        const responses = await Promise.all(axiosRequests);
+            responses.forEach((resp) =>{
+                const id = resp.data.id;
+                const name = resp.data.name;
+                const moves = resp.data.moves.map(obj=>obj.name);
+                const species = resp.data.pokemon_species.map(obj=>obj.name);
+                const types = resp.data.types.map(obj=>obj.name);
 
-        responses.forEach((resp) =>{
-            const id = resp.data.id;
-            const name = resp.data.name;
-            const moves = resp.data.moves.map(obj=>obj.name);
-            const species = resp.data.pokemon_species.map(obj=>obj.name);
-            const types = resp.data.types.map(obj=>obj.name);
+                genData[id-1] = {id,name,moves,species,types};
 
-            genData[id-1] = {id,name,moves,species,types};
+                const query = {
+                    text: "INSERT INTO generation VALUES($1, $2, $3, $4, $5)",
+                    values: [id, name, moves, species, types]
+                };
 
-            const query = {
-                text: "INSERT INTO generation VALUES($1, $2, $3, $4, $5)",
-                values: [id, name, moves, species, types]
-            };
+                pool.query(query).catch(ex=>console.error(ex));
+                
+            });
 
-            pool.query(query).catch(ex=>console.error(ex));
-			
-        });
+        }else{
+            console.log("All generations data found in db...");
+            return res.rows;
+        }
 
-	}else{
-		console.log("All generations data found in db...");
-		genData.push(...res.rows);
-	}
+        return genData;
 
-	return genData;
+    })
+
+	
 }
 
 async function getDataFromDB(gen){
