@@ -189,14 +189,16 @@ async function getDataFromDB(gen){
 	// get items from db if atleast 10 available (could skip if genData is already a global var)
    const r = await pool.query('SELECT * FROM generation WHERE id=$1', [gen]);
    const currentGenData = r.rows[0];
+   const currentGenM = currentGenData.moves.map(obj => obj[0]);
+   const currentGenP = currentGenData.species.map(obj => obj[0]);
 
 
    const allMoveSet = await pool.query('SELECT * FROM move');
    const allPokemonSet = await pool.query('SELECT * FROM pokemon');
 
 
-   const currentGenMoveSet = allMoveSet.rows.filter(move => currentGenData.moves.includes(move.name));
-   const currentGenPokemonSet = allPokemonSet.rows.filter(poke => currentGenData.species.includes(poke.name));
+   const currentGenMoveSet = allMoveSet.rows.filter(move => currentGenM.includes(move.name));
+   const currentGenPokemonSet = allPokemonSet.rows.filter(poke => currentGenP.includes(poke.name));
 
    return {currentGenMoveSet, currentGenPokemonSet};
 
