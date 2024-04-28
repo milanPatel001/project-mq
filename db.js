@@ -67,14 +67,13 @@ async function getMoves(m, genData){
             // store data in db
             await pool.query(q);
 
-            // save next_offset to db  
-            await pool.query("UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation = $1",[m.generation]);
-
-
+          
         });
         
     }
-
+    
+    // save next_offset to db  
+    await pool.query("UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation = $1",[m.generation]);
     console.log("Saved 10 moves...");
 
 }
@@ -122,14 +121,12 @@ async function getSpecies(m, genData){
             // store data in db
             await pool.query(q);
 
-            // save next_offset to db 
-            await pool.query("UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation = $1",[m.generation]);
-
-
-  
         });
-        
     }
+
+    // save next_offset to db 
+    await pool.query("UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation = $1",[m.generation]);
+
 
     console.log("Saved 10 pokemons...");
 
