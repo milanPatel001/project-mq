@@ -18,8 +18,8 @@ describe('Getting data from db ', ()=>{
             if(text == "SELECT * FROM generation WHERE id=$1" && values[0]==1){
                 return Promise.resolve({
                     rows: [{
-                        moves: ["air kick", "jet storm", "ice punch"],
-                        species: ["pikachu", "raichu", "pichu"]
+                        moves: [["air kick", "0"], ["jet storm", "1"], ["ice punch", "2"]],
+                        species: [["pikachu", "0"], ["raichu", "1"], ["pichu", "2"]]
                     }]
                 });
             }else if(text == "SELECT * FROM move"){
