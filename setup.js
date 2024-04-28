@@ -1,4 +1,12 @@
-const {pool} = require("./db");
+const {Pool} = require("pg");
+
+const pool = new Pool({
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	password: process.env.DB_PASSWORD,
+	user: process.env.DB_USER,
+	database: process.env.DB_DATABASE,
+});
 
 async function createTables(){
     try{
@@ -13,7 +21,7 @@ async function createTables(){
             await pool.query("INSERT INTO offset_values VALUES(8,0,0,108,96)");
             await pool.query("INSERT INTO offset_values VALUES(9,0,0,69,120)");
         });
-        
+
         await pool.query("CREATE TABLE pokemon(id int PRIMARY KEY, name text, base_experience int, height int,weight int,abilities text[],moves text[],types text[],img text)")
         
         await pool.query("CREATE TABLE generation(id int PRIMARY KEY,name text,moves text[][],species text[][],types text[])");

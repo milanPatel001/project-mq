@@ -6,17 +6,18 @@ describe("Data analyzer integration tests", ()=>{
 
     it('should get all the offsets', async ()=>{
        
-            await client.connect();
-
+        client.connect().then(() =>{  
             client.query("SELECT * FROM offset_values").then(async (offsetVals) => {
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ generation: 4 }));
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ moves_offset_limit: 165 }));
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ species_offset_limit: 151 }));
     
-    
                 await client.end();
            
             });
+        });
+
+          
      
     });
 
