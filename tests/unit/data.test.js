@@ -70,7 +70,7 @@ describe('Getting data from db ', ()=>{
 
         expect(genData[1].id).toBe("2");
         expect(genData[5].name).toBe("generation6");
-        expect(genData[3].moves[0]).toBe("move4");
+        expect(genData[3].moves[0][0]).toBe("move4");
     });
  
 });
