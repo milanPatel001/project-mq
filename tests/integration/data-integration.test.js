@@ -1,25 +1,18 @@
-const {client} = require("../../db");
+const {pool} = require("../../db");
 const axios = require("axios");
 
 
 describe("Data analyzer integration tests", ()=>{
 
     it('should get all the offsets', async ()=>{
-        try{
-            await client.connect();
-
-            client.query("SELECT * FROM offset_values").then(async (offsetVals) => {
+       
+            pool.query("SELECT * FROM offset_values").then(async (offsetVals) => {
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ generation: 4 }));
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ moves_offset_limit: 165 }));
                 expect(offsetVals.rows).toContainEqual(expect.objectContaining({ species_offset_limit: 151 }));
-    
-    
-                await client.end();
            
             });
-        }catch(ex){
-            await client.end();
-        }
+     
     });
 
     it('should return correct generation data from pokeApi server', async ()=>{
