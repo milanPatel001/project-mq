@@ -38,7 +38,7 @@ async function getMoves(m, genData){
 
         if(currIndex >= currentGenData.moves.length) break;
 
-        //TODO: use ids instead of names
+        //FIXED: use ids instead of names
         const opt = {
             method: "GET",
             url: currentGenData.moves[currIndex][1]
@@ -90,10 +90,14 @@ async function getSpecies(m, genData){
 
         if(currIndex >= currentGenData.species.length) break;
 
-        //TODO: use ids instead of names
+        //FIXED: use ids instead of names
+
+        const u = currentGenData.species[currIndex][1].split("/");
+        const pokemonId = u[u.length-2];
+
         const opt = {
             method: "GET",
-            url: currentGenData.species[currIndex][1]
+            url: pokeUrl+"pokemon/"+pokemonId
         };
 
         
