@@ -13,8 +13,8 @@ CREATE TABLE pokemon(
 CREATE TABLE generation(
 	id int PRIMARY KEY,
 	name text,
-	moves text[],
-	species text[],
+	moves text[][],
+	species text[][],
 	types text[]
 );
 

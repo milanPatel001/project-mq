@@ -41,7 +41,7 @@ async function getMoves(m, genData){
         //TODO: use ids instead of names
         const opt = {
             method: "GET",
-            url: pokeUrl+"move/"+currentGenData.moves[currIndex]
+            url: currentGenData.moves[currIndex][1]
         };
 
         //console.log(currentGenData);
@@ -68,7 +68,7 @@ async function getMoves(m, genData){
             await pool.query(q);
 
             // save next_offset to db  
-            await pool.query('UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation=$1',[Number(m.gen)]);
+            await pool.query("UPDATE offset_values SET moves_offset = moves_offset + 10 WHERE generation = $1",[m.gen]);
 
 
         });
@@ -93,7 +93,7 @@ async function getSpecies(m, genData){
         //TODO: use ids instead of names
         const opt = {
             method: "GET",
-            url: pokeUrl+"pokemon/"+currentGenData.species[currIndex]
+            url: currentGenData.species[currIndex][1]
         };
 
         
@@ -118,8 +118,8 @@ async function getSpecies(m, genData){
             // store data in db
             await pool.query(q);
 
-            // save next_offset to db  
-            await pool.query('UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation=$1',[Number(m.gen)]);
+            // save next_offset to db 
+            await pool.query("UPDATE offset_values SET species_offset = species_offset + 10 WHERE generation = $1",[m.gen]);
 
 
   
@@ -158,9 +158,9 @@ async function getGenerationsData(){
         responses.forEach((resp) =>{
             const id = resp.data.id;
             const name = resp.data.name;
-            const moves = resp.data.moves.map(obj=>obj.name);
-            const species = resp.data.pokemon_species.map(obj=>obj.name);
-            const types = resp.data.types.map(obj=>obj.name);
+            const moves = resp.data.moves.map(moveObj => [moveObj.name, moveObj.url]);
+            const species = resp.data.pokemon_species.map(specie => [specie.name, specie.url]);
+            const types = resp.data.types.map(type => type.name);
 
             genData[id-1] = {id,name,moves,species,types};
 
