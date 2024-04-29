@@ -43,10 +43,13 @@ async function getMessageFromDataAnalyzer(channel, genData){
             await getMoves(m, genData);
             await getSpecies(m, genData);
 
+
+            const next_moves_offset = m.current_moves_offset<0 ? -1 : m.current_moves_offset + 10;
+            const next_species_offset = m.current_species_offset<0 ? -1 : m.current_species_offset + 10;
         
             channel.publish("ex","data",Buffer.from(JSON.stringify({
-                next_moves_offset: m.current_moves_offset + 10,
-                next_species_offset: m.current_species_offset + 10,
+                next_moves_offset: next_moves_offset,
+                next_species_offset: next_species_offset,
                 generation: m.generation
             })));
 

@@ -42,7 +42,7 @@ async function main(){
                         
                         
                         //send msg to dc if offset not reached {current_specie_offset ,current_move_offset, id, generation}
-                        if(offsetObj.moves_offset < offsetObj.moves_offset_limit || offsetObj.species_offset < offsetObj.species_offset_limit){
+                        if((offsetObj.moves_offset !== -1 &&  offsetObj.moves_offset < offsetObj.moves_offset_limit) || (offsetObj.species_offset !== -1 && offsetObj.species_offset < offsetObj.species_offset_limit)){
                             channel.publish("ex", "collect", Buffer.from(JSON.stringify(collectMsg)));
         
                         }
